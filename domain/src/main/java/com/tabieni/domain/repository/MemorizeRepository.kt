@@ -5,5 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MemorizeRepository {
 
-    fun getMemorize():Flow<List<Memorize>>
+     suspend fun  getMemorize():Memorize
+
+    suspend fun getLastMemorized():Memorize
 }

@@ -10,10 +10,13 @@ object Dependencies {
     const val composeUiTooling = "androidx.compose.ui:ui-tooling"
     const val composeUiToolingPreview = "androidx.compose.ui:ui-tooling-preview"
     const val composeRuntime = "androidx.compose.runtime:runtime"
+    const val composeNavigation = "androidx.navigation:navigation-compose:${Versions.composeNavigation}"
 
     const val hiltAndroid = "com.google.dagger:hilt-android:${Versions.hilt}"
     const val hiltCompiler = "com.google.dagger:hilt-android-compiler:${Versions.hilt}"
     const val hiltAgp = "com.google.dagger:hilt-android-gradle-plugin:${Versions.hilt}"
+    const val hiltAndroidCompiler = "androidx.hilt:hilt-compiler:1.2.0"
+    const val hiltNavigationCompose = "androidx.hilt:hilt-navigation-compose:1.2.0"
 
     const val okHttp = "com.squareup.okhttp3:okhttp:${Versions.okHttp}"
     const val okHttpLoggingInterceptor = "com.squareup.okhttp3:logging-interceptor:${Versions.okHttp}"
@@ -27,6 +30,7 @@ object Dependencies {
 
     const val junit = "junit:junit:${Versions.junit}"
     const val testJunit = "androidx.test.ext:junit:${Versions.testJunit}"
+    const val testRunner = "androidx.test:runner:1.4.1"
     const val espressoTest = "androidx.test.espresso:espresso-core:${Versions.espressoTest}"
 
     const val datastore = "androidx.datastore:datastore-preferences:${Versions.datastore}"
@@ -42,6 +46,7 @@ fun DependencyHandler.compose(){
     implementation(Dependencies.composeUiGraphics)
     implementation(Dependencies.composeUiTooling)
     implementation(Dependencies.composeMaterial)
+    implementation(Dependencies.composeNavigation)
     debugImplementation(Dependencies.composeUiToolingPreview)
 }
 
@@ -57,6 +62,7 @@ fun DependencyHandler.test(){
     testImplementation(Dependencies.junit)
     androidTestImplementation(Dependencies.testJunit)
     androidTestImplementation(Dependencies.espressoTest)
+    androidTestImplementation(Dependencies.testRunner)
 }
 
 fun DependencyHandler.room() {
@@ -75,14 +81,12 @@ fun DependencyHandler.retrofit() {
 fun DependencyHandler.hilt() {
     implementation(Dependencies.hiltAndroid)
     kapt(Dependencies.hiltCompiler)
+    kapt(Dependencies.hiltAndroidCompiler)
+    implementation(Dependencies.hiltNavigationCompose)
 }
 
-fun DependencyHandler.domain(){
+fun DependencyHandler.domain() {
     implementation(project(":domain"))
-}
-
-fun DependencyHandler.authentication(){
-    implementation(project(":presentation-auth"))
 }
 
 fun DependencyHandler.dataLocal(){
@@ -93,26 +97,18 @@ fun DependencyHandler.dataRemote(){
     implementation(project(":data-remote"))
 }
 
-fun DependencyHandler.resources(){
+fun DependencyHandler.resources() {
     implementation(project(":resources"))
 }
 
-fun DependencyHandler.base(){
-    implementation(project(":presentation-base"))
+fun DependencyHandler.home(){
+    implementation(project(":presentation-home"))
 }
 
-fun DependencyHandler.check(){
-    implementation(project(":presentation-check"))
-}
-
-fun DependencyHandler.main(){
-    implementation(project(":presentation-main"))
-}
-
-fun DependencyHandler.dataRepository(){
+fun DependencyHandler.dataRepository() {
     implementation(project(":data-repository"))
 }
 
-fun DependencyHandler.spinner(){
-    implementation(project(":spinner"))
+fun DependencyHandler.plan(){
+    implementation(project(":presentation-plan"))
 }

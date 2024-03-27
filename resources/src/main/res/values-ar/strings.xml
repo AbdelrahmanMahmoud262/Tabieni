@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">تابعني</string>
+    <string name="home">الرئيسيه</string>
+    <string name="alsalam_ealaykum">السلام عليكم</string>
+    <string name="last_memorized">آخر الحفظ</string>
+    <string name="quran">القرآن</string>
+    <string name="todays_work">عمل اليوم</string>
+    <string name="plan">الخطة</string>
+    <string name="nothing_memorized">لم يتم حفظ شيئ</string>
+    <string name="ayah_number">رقم الآية %1$s</string>
+</resources>

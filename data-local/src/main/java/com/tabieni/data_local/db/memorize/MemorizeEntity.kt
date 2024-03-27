@@ -2,23 +2,10 @@ package com.tabieni.data_local.db.memorize
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.tabieni.data_local.db.sorah.SorahEntity
 
 @Entity(
- tableName = "memorize",
- foreignKeys = [ForeignKey(
-  entity = SorahEntity::class,
-  parentColumns = arrayOf("id"),
-  childColumns = arrayOf("from_sorah"),
-  onDelete = ForeignKey.CASCADE
- ), ForeignKey(
-  entity = SorahEntity::class,
-  parentColumns = arrayOf("id"),
-  childColumns = arrayOf("to_sorah"),
-  onDelete = ForeignKey.CASCADE
- )]
+ tableName = "memorize"
 )
 data class MemorizeEntity(
  @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "id") val id: Int,

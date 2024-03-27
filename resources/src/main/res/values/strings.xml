@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tabieni</string>
+    <string name="home">Home</string>
+    <string name="alsalam_ealaykum">Alsalam-ealaykum</string>
+    <string name="last_memorized">Last Memorized</string>
+    <string name="quran">Quran</string>
+    <string name="todays_work">Today\'s Work</string>
+    <string name="plan">Plan</string>
+    <string name="nothing_memorized">Nothing Memorized</string>
+    <string name="ayah_number">Ayah No. %1$s</string>
+</resources>

@@ -25,6 +25,9 @@
             <option value="$PROJECT_DIR$/data-local" />
             <option value="$PROJECT_DIR$/data-repository" />
             <option value="$PROJECT_DIR$/domain" />
+            <option value="$PROJECT_DIR$/presentation-boarding" />
+            <option value="$PROJECT_DIR$/presentation-home" />
+            <option value="$PROJECT_DIR$/presentation-plan" />
             <option value="$PROJECT_DIR$/resources" />
           </set>
         </option>

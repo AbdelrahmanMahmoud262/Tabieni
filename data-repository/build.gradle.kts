@@ -14,4 +14,6 @@ dependencies {
     hilt()
     domain()
     compose()
+    test()
+
 }

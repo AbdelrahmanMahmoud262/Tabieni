@@ -2,23 +2,10 @@ package com.tabieni.data_local.db.connection
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.tabieni.data_local.db.sorah.SorahEntity
 
 @Entity(
-    tableName = "connection",
-    foreignKeys = [ForeignKey(
-        entity = SorahEntity::class,
-        parentColumns = arrayOf("id"),
-        childColumns = arrayOf("from_sorah"),
-        onDelete = ForeignKey.CASCADE
-    ), ForeignKey(
-        entity = SorahEntity::class,
-        parentColumns = arrayOf("id"),
-        childColumns = arrayOf("to_sorah"),
-        onDelete = ForeignKey.CASCADE
-    )]
+    tableName = "connection"
 )
 data class ConnectionEntity(
     @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "id") val id: Int,
