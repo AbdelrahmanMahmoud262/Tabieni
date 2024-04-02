@@ -11,9 +11,7 @@ class MemorizeRepositoryImpl @Inject constructor(
     private val memorizeDataSource: MemorizeDataSource,
 ) : MemorizeRepository {
 
-    override suspend  fun getMemorize(): Memorize {
-
-        Log.e("repoImpl", "here")
+    override fun getMemorize(): Flow<List<Memorize>> {
         return memorizeDataSource.getMemorize()
     }
 

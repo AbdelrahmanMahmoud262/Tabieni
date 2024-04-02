@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface ConnectionDataSource {
 
 
-    fun getConnection(): Connection
+    fun getConnection(): Flow<List<Connection>>
 
     fun getLastConnection():Flow<Connection>
 

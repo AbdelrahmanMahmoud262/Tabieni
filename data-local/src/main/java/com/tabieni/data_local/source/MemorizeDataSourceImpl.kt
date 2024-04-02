@@ -16,17 +16,19 @@ class MemorizeDataSourceImpl @Inject constructor(
     private val memorizeDao: MemorizeDao,
 ) : MemorizeDataSource {
 
-    override suspend  fun getMemorize(): Memorize  = memorizeDao.getMemorize()
-            .let { memorizeEntity ->
-                Memorize(
-                    memorizeEntity.id,
-                    memorizeEntity.part,
-                    memorizeEntity.fromSorah,
-                    memorizeEntity.toSorah,
-                    memorizeEntity.fromAyah,
-                    memorizeEntity.toAyah,
-                    memorizeEntity.done != 0
-                )
+    override  fun getMemorize(): Flow<List<Memorize>> = memorizeDao.getMemorize()
+            .map { memorizeList ->
+                memorizeList.map {memorizeEntity->
+                    Memorize(
+                        memorizeEntity.id,
+                        memorizeEntity.part,
+                        memorizeEntity.fromSorah,
+                        memorizeEntity.toSorah,
+                        memorizeEntity.fromAyah,
+                        memorizeEntity.toAyah,
+                        memorizeEntity.done != 0
+                    )
+                }
             }
     override suspend fun getLastMemorized(): Memorize =
         memorizeDao.getLastMemorized()

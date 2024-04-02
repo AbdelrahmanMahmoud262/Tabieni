@@ -7,9 +7,9 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,27 +20,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.Button
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,117 +41,312 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.tabieni.domain.entity.Collection
 import com.tabieni.presentation_plan.model.Spinner
+import com.tabieni.presentation_plan.utils.dayOfMonth
 import com.tabieni.resources.components.Base
 import com.tabieni.resources.ui.theme.poppins
+import java.time.DayOfWeek
+import java.time.format.TextStyle
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun PlanScreen(drawerState: DrawerState) {
     Base(drawerState = drawerState) {
 
-        var selectedPlanItem by remember {
-            mutableStateOf<Spinner?>(null)
+        val viewmodel:PlanViewModel = hiltViewModel()
+        val state by viewmodel.state
+
+        PlanBrief(state = state)
+    }
+}
+
+@Composable
+private fun PlanBrief(state: PlanState) {
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFDAD0E1))
+    ) {
+        val maxHeight = this.maxHeight
+
+        val topHeight: Dp = maxHeight / 3
+        val bottomHeight: Dp = maxHeight * 2 / 3
+
+        val centerHeight = maxHeight / 6
+
+        val centerPaddingBottom = bottomHeight - centerHeight / 2
+
+        Top(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.TopCenter)
+                .height(topHeight)
+        )
+
+        Bottom(
+            state = state,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .height(bottomHeight)
+                .padding(top = centerHeight / 2)
+        )
+
+        Center(
+            modifier = Modifier
+                .padding(bottom = centerPaddingBottom)
+                .fillMaxWidth()
+                .height(centerHeight)
+                .align(Alignment.BottomCenter)
+        )
+    }
+}
+
+@Composable
+fun Center(modifier: Modifier) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(24.dp))
+            .background(Color(0xFFDDBEDD)),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = android.text.format.DateFormat.format(
+                "d MMMM",
+                Date()
+            ).toString(),
+            fontFamily = poppins,
+            fontWeight = FontWeight.Medium,
+            fontSize = 16.sp,
+            color = Color.Black,
+            modifier = Modifier
+                .padding(start = 32.dp, top = 16.dp),
+        )
+
+
+        Row(
+            modifier = Modifier
+                .fillMaxSize(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            val weekDays = listOf(
+                DayOfWeek.SUNDAY,
+                DayOfWeek.MONDAY,
+                DayOfWeek.TUESDAY,
+                DayOfWeek.WEDNESDAY,
+                DayOfWeek.THURSDAY,
+                DayOfWeek.FRIDAY,
+                DayOfWeek.SATURDAY
+            )
+            for (item in weekDays) {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .clickable {
+                            // TODO : Make it clickable
+                        }
+                        .padding(8.dp)
+
+                ) {
+                    Text(
+                        text = item.getDisplayName(
+                            TextStyle.SHORT,
+                            Locale.getDefault()
+                        ),
+                        fontFamily = poppins,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 12.sp,
+                        color = Color(0xFF858585),
+                    )
+                    Text(
+                        text = item.dayOfMonth().toString(),
+                        fontFamily = poppins,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 12.sp,
+                        color = Color.Black,
+                    )
+                }
+            }
         }
-        var selectedStartingDateItem by remember {
-            mutableStateOf<Spinner?>(null)
-        }
-        var selectedTimesPerWeekItem by remember {
-            mutableStateOf<Spinner?>(null)
+    }
+}
+
+
+@Composable
+fun Bottom(state: PlanState,modifier: Modifier) {
+    Column(
+        modifier = modifier
+            .verticalScroll(rememberScrollState())
+    ) {
+
+
+    }
+}
+
+@Composable
+fun PlanItem(
+    modifier: Modifier = Modifier,
+    item:Collection
+) {
+
+}
+
+@Composable
+private fun Top(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .background(
+                brush = Brush.verticalGradient(
+                    listOf(
+                        Color(0xFFDAD0E1),
+                        MaterialTheme.colorScheme.primary
+                    )
+                )
+            ),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            horizontalAlignment = Alignment.End
+        ) {
+            Text(
+                text = "Plan's name",
+                fontFamily = poppins,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 24.sp,
+                color = Color.White,
+                modifier = Modifier
+                    .padding(start = 32.dp)
+            )
+            Text(
+                text = "365 days left",
+                fontFamily = poppins,
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp,
+                color = Color.White,
+                modifier = Modifier
+                    .padding(start = 32.dp),
+            )
         }
 
-        Box(
+        Icon(
+            painter = painterResource(id = com.tabieni.resources.R.drawable.list),
+            contentDescription = stringResource(R.string.more_details),
+            tint = Color.White,
+            modifier = Modifier
+                .padding(end = 32.dp)
+        )
+    }
+}
+
+@Composable
+private fun MakeYourPlan() {
+    var selectedPlanItem by remember {
+        mutableStateOf<Spinner?>(null)
+    }
+    var selectedStartingDateItem by remember {
+        mutableStateOf<Spinner?>(null)
+    }
+    var selectedTimesPerWeekItem by remember {
+        mutableStateOf<Spinner?>(null)
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFDAD0E1))
+    ) {
+
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFDAD0E1))
         ) {
+
 
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .padding(32.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
+                Text(
+                    text = "Make your plan",
+                    fontFamily = poppins,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    color = Color.Black
+                )
 
+                Spacer(modifier = Modifier.height(32.dp))
 
-                Column(
-                    modifier = Modifier
-                        .padding(32.dp)
-                        .verticalScroll(rememberScrollState())
+                SpinnerItem(
+                    title = "Plan Type",
+                    message = "Pick Your Plan Type",
+                    items = listOf(
+                        Spinner(spinnerItemText = "Half Hizb"),
+                        Spinner(spinnerItemText = "Quarter Hizb"),
+                        Spinner(spinnerItemText = "Juz"),
+                    ),
                 ) {
-                    Text(
-                        text = "Make your plan",
-                        fontFamily = poppins,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 16.sp,
-                        color = Color.Black
-                    )
-
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    SpinnerItem(
-                        title = "Plan Type",
-                        message = "Pick Your Plan Type",
-                        items = listOf(
-                            Spinner(spinnerItemText = "Half Hizb"),
-                            Spinner(spinnerItemText = "Quarter Hizb"),
-                            Spinner(spinnerItemText = "Juz"),
-                        ),
-                    ) {
-                        selectedPlanItem = it
-                    }
-
-                    SpinnerItem(
-                        title = "Starting Date",
-                        message = "Pick your plan starting date",
-                        items = listOf(
-                            Spinner(spinnerItemText = "Today"),
-                            Spinner(spinnerItemText = "Tomorrow"),
-                            Spinner(spinnerItemText = "Next Week"),
-                            Spinner(spinnerItemText = "Next Month"),
-                        ),
-                    ) {
-                        selectedStartingDateItem = it
-                    }
-
-                    SpinnerItem(
-                        title = "How many times a week?",
-                        message = "Pick your plan weekly schedule",
-                        items = listOf(
-                            Spinner(spinnerItemText = "Once a week"),
-                            Spinner(spinnerItemText = "Twice a week"),
-                            Spinner(spinnerItemText = "Three times a week"),
-                            Spinner(spinnerItemText = "Four times a week"),
-                        ),
-                    ) {
-                        selectedTimesPerWeekItem = it
-                    }
-
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Button(
-                            onClick = {},
-                        ) {
-                            Text(
-                                text = "Make your plan",
-                                fontFamily = poppins,
-                                fontWeight = FontWeight.Normal,
-                                fontSize = 12.sp
-                            )
-                        }
-
-                    }
+                    selectedPlanItem = it
                 }
 
+                SpinnerItem(
+                    title = "Starting Date",
+                    message = "Pick your plan starting date",
+                    items = listOf(
+                        Spinner(spinnerItemText = "Today"),
+                        Spinner(spinnerItemText = "Tomorrow"),
+                        Spinner(spinnerItemText = "Next Week"),
+                        Spinner(spinnerItemText = "Next Month"),
+                    ),
+                ) {
+                    selectedStartingDateItem = it
+                }
+
+                SpinnerItem(
+                    title = "How many times a week?",
+                    message = "Pick your plan weekly schedule",
+                    items = listOf(
+                        Spinner(spinnerItemText = "Once a week"),
+                        Spinner(spinnerItemText = "Twice a week"),
+                        Spinner(spinnerItemText = "Three times a week"),
+                        Spinner(spinnerItemText = "Four times a week"),
+                    ),
+                ) {
+                    selectedTimesPerWeekItem = it
+                }
+
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Button(
+                        onClick = {},
+                    ) {
+                        Text(
+                            text = "Make your plan",
+                            fontFamily = poppins,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 12.sp
+                        )
+                    }
+
+                }
             }
+
         }
     }
 }

@@ -10,7 +10,7 @@ class ConnectionRepositoryImpl @Inject constructor(
     private val dataSource: ConnectionDataSource,
 ) : ConnectionRepository {
 
-    override fun getConnection(): Connection =
+    override fun getConnection(): Flow<List<Connection>> =
         dataSource.getConnection()
 
     override fun getLastConnection(): Flow<Connection> =

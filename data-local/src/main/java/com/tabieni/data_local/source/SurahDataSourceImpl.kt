@@ -11,7 +11,6 @@ class SurahDataSourceImpl @Inject constructor(
 ) :SurahDataSource{
     override suspend fun getSurah(id: Int): Surah = surahDao.getSurah(id)
         .let {
-            Log.e("datasource", it.toString())
             Surah(
                 id = it.id,
                 arabicName = it.arabicName,

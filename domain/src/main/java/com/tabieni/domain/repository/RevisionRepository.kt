@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface RevisionRepository {
 
-    fun getRevision(): Revision
+    fun getRevision(): Flow<List<Revision>>
 
     fun getLastRevised(): Flow<Revision>
 }

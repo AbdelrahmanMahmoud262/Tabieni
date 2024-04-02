@@ -1,7 +1,6 @@
 package com.tabieni.domain.entity
 
-
-data class MemorizeWithSurah(
+data class ConnectionWithSurah(
     val id: Int = 0,
     val part: Int = 0,
     val fromSurah: Surah = Surah(),

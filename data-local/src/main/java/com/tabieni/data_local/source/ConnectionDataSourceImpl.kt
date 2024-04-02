@@ -12,9 +12,19 @@ class ConnectionDataSourceImpl @Inject constructor(
     private val connectionDao: ConnectionDao,
 ) : ConnectionDataSource {
 
-    override fun getConnection(): Connection =
-        connectionDao.getConnection().let {
-            Connection(it.id, it.part, it.fromSorah, it.toSorah, it.fromAyah, it.toAyah, it.done)
+    override fun getConnection(): Flow<List<Connection>> =
+        connectionDao.getConnection().map { connectionList ->
+            connectionList.map {
+                Connection(
+                    it.id,
+                    it.part,
+                    it.fromSorah,
+                    it.toSorah,
+                    it.fromAyah,
+                    it.toAyah,
+                    it.done
+                )
+            }
         }
 
     override fun getLastConnection(): Flow<Connection> =

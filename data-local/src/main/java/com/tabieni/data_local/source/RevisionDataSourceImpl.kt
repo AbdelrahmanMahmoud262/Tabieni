@@ -8,16 +8,18 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class RevisionDataSourceImpl @Inject constructor(
-    private val revisionDao: RevisionDao
-) :RevisionDataSource{
+    private val revisionDao: RevisionDao,
+) : RevisionDataSource {
 
-    override fun getRevision(): Revision =
-        revisionDao.getRevision().let {
-            Revision(it.id,it.part,it.fromSorah,it.toSorah,it.fromAyah,it.toAyah,it.done)
+    override fun getRevision(): Flow<List<Revision>> =
+        revisionDao.getRevision().map { revisionList ->
+            revisionList.map {
+                Revision(it.id, it.part, it.fromSorah, it.toSorah, it.fromAyah, it.toAyah, it.done)
+            }
         }
 
     override fun getLastRevised(): Flow<Revision> =
         revisionDao.getLastRevised().map {
-            Revision(it.id,it.part,it.fromSorah,it.toSorah,it.fromAyah,it.toAyah,it.done)
+            Revision(it.id, it.part, it.fromSorah, it.toSorah, it.fromAyah, it.toAyah, it.done)
         }
 }

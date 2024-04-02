@@ -9,7 +9,7 @@ import javax.inject.Inject
 class RevisionRepositoryImpl @Inject constructor(
     private val dataSource: RevisionDataSource,
 ) : RevisionRepository {
-    override fun getRevision(): Revision =
+    override fun getRevision(): Flow<List<Revision>> =
         dataSource.getRevision()
 
     override fun getLastRevised(): Flow<Revision> =
