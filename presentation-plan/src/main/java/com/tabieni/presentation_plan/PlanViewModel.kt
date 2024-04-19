@@ -30,4 +30,12 @@ class PlanViewModel @Inject constructor(
             }
         }
     }
+
+    fun onEvent(event: PlanEvent){
+        when (event){
+            is PlanEvent.DayOfWeek -> {
+                _state.value = _state.value.copy(selectedDayOfWeek = event.dayOfWeek)
+            }
+        }
+    }
 }

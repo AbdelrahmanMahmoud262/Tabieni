@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -39,7 +40,7 @@ fun MainCompose(
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
 ) {
 
-    var currentPick by remember { mutableStateOf(MainNavOption.HomeScreen) }
+    var currentPick by rememberSaveable { mutableStateOf(MainNavOption.HomeScreen) }
 
 
     val scope = rememberCoroutineScope()

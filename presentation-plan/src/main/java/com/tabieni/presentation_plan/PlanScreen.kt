@@ -29,11 +29,11 @@ import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,22 +59,30 @@ import com.tabieni.resources.components.Base
 import com.tabieni.resources.ui.theme.poppins
 import java.time.DayOfWeek
 import java.time.format.TextStyle
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
 @Composable
-fun PlanScreen(drawerState: DrawerState) {
+fun PlanScreen(
+    drawerState: DrawerState,
+    viewModel: PlanViewModel = hiltViewModel(),
+) {
     Base(drawerState = drawerState) {
 
-        val viewmodel:PlanViewModel = hiltViewModel()
-        val state by viewmodel.state
+        val state by viewModel.state
 
-        PlanBrief(state = state)
+        PlanBrief(viewModel = viewModel)
     }
 }
 
 @Composable
-private fun PlanBrief(state: PlanState) {
+private fun PlanBrief(
+    viewModel: PlanViewModel,
+) {
+
+    val state by viewModel.state
+
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -97,7 +105,7 @@ private fun PlanBrief(state: PlanState) {
         )
 
         Bottom(
-            state = state,
+            viewModel = viewModel,
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
@@ -106,6 +114,7 @@ private fun PlanBrief(state: PlanState) {
         )
 
         Center(
+            viewModel = viewModel,
             modifier = Modifier
                 .padding(bottom = centerPaddingBottom)
                 .fillMaxWidth()
@@ -116,7 +125,7 @@ private fun PlanBrief(state: PlanState) {
 }
 
 @Composable
-fun Center(modifier: Modifier) {
+fun Center(modifier: Modifier,viewModel: PlanViewModel) {
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(24.dp))
@@ -153,13 +162,15 @@ fun Center(modifier: Modifier) {
                 DayOfWeek.SATURDAY
             )
             for (item in weekDays) {
+                val selected = item == viewModel.state.value.selectedDayOfWeek
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .clip(CircleShape)
+                        .background(if (selected) MaterialTheme.colorScheme.primary else Color.Transparent)
                         .clickable {
-                            // TODO : Make it clickable
+                            viewModel.onEvent(PlanEvent.DayOfWeek(item))
                         }
                         .padding(8.dp)
 
@@ -172,14 +183,14 @@ fun Center(modifier: Modifier) {
                         fontFamily = poppins,
                         fontWeight = FontWeight.Medium,
                         fontSize = 12.sp,
-                        color = Color(0xFF858585),
+                        color = if (selected) Color.White else Color(0xFF858585),
                     )
                     Text(
                         text = item.dayOfMonth().toString(),
                         fontFamily = poppins,
                         fontWeight = FontWeight.Medium,
                         fontSize = 12.sp,
-                        color = Color.Black,
+                        color = if (selected) Color.White else Color.Black,
                     )
                 }
             }
@@ -189,12 +200,11 @@ fun Center(modifier: Modifier) {
 
 
 @Composable
-fun Bottom(state: PlanState,modifier: Modifier) {
+fun Bottom(viewModel: PlanViewModel, modifier: Modifier) {
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
     ) {
-
 
     }
 }
@@ -202,9 +212,24 @@ fun Bottom(state: PlanState,modifier: Modifier) {
 @Composable
 fun PlanItem(
     modifier: Modifier = Modifier,
-    item:Collection
+    item: Collection,
+    state: MutableState<PlanState>
 ) {
+    Column(
+        modifier = modifier
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
+        Text(
+            text = stringResource(R.string.memorize),
+            fontFamily = poppins,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
 }
 
 @Composable
@@ -504,8 +529,9 @@ fun SpinnerItem(
     uiMode = Configuration.UI_MODE_TYPE_MASK or Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
-fun HomeScreenPreview() {
-    PlanScreen(drawerState = DrawerState(initialValue = DrawerValue.Closed))
+fun PlanScreenPreview() {
+//    PlanScreen(drawerState = DrawerState(initialValue = DrawerValue.Closed))
+    PlanBrief(viewModel = hiltViewModel())
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFFDAD0E1)
