@@ -2,4 +2,18 @@
 <resources>
     <string name="more_details">More Details</string>
     <string name="memorize">Memorize</string>
+    <string name="plan_type">Plan Type</string>
+    <string name="pick_your_plan_type">Pick Your Plan Type</string>
+    <string name="half_hizb">Half Hizb</string>
+    <string name="quarter_hizb">Quarter Hizb</string>
+    <string name="juz">Juz</string>
+    <string name="starting_date">Starting Date</string>
+    <string name="pick_your_plan_starting_date">Pick your plan starting date</string>
+    <string name="how_many_times_a_week">How many times a week?</string>
+    <string name="pick_your_plan_weekly_schedule">Pick your plan weekly schedule</string>
+    <string name="once_a_week">Once a week</string>
+    <string name="twice_a_week">Twice a week</string>
+    <string name="three_times_a_week">Three times a week</string>
+    <string name="four_times_a_week">Four times a week</string>
+    <string name="make_your_plan">Make your plan</string>
 </resources>

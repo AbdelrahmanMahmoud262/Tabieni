@@ -28,10 +28,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -53,13 +56,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tabieni.domain.entity.Collection
+import com.tabieni.domain.entity.Plan
+import com.tabieni.domain.entity.PlanType
 import com.tabieni.presentation_plan.model.Spinner
 import com.tabieni.presentation_plan.utils.dayOfMonth
 import com.tabieni.resources.components.Base
 import com.tabieni.resources.ui.theme.poppins
+import java.text.DateFormat
 import java.time.DayOfWeek
+import java.time.Instant
 import java.time.format.TextStyle
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -72,8 +78,10 @@ fun PlanScreen(
 
         val state by viewModel.state
 
-        PlanBrief(viewModel = viewModel)
+//        PlanBrief(viewModel = viewModel)
+        MakeYourPlan(viewModel = viewModel)
     }
+
 }
 
 @Composable
@@ -125,7 +133,7 @@ private fun PlanBrief(
 }
 
 @Composable
-fun Center(modifier: Modifier,viewModel: PlanViewModel) {
+fun Center(modifier: Modifier, viewModel: PlanViewModel) {
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(24.dp))
@@ -213,8 +221,9 @@ fun Bottom(viewModel: PlanViewModel, modifier: Modifier) {
 fun PlanItem(
     modifier: Modifier = Modifier,
     item: Collection,
-    state: MutableState<PlanState>
+    state: MutableState<PlanState>,
 ) {
+
     Column(
         modifier = modifier
             .padding(16.dp),
@@ -280,8 +289,9 @@ private fun Top(modifier: Modifier = Modifier) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MakeYourPlan() {
+private fun MakeYourPlan(viewModel: PlanViewModel) {
     var selectedPlanItem by remember {
         mutableStateOf<Spinner?>(null)
     }
@@ -291,7 +301,35 @@ private fun MakeYourPlan() {
     var selectedTimesPerWeekItem by remember {
         mutableStateOf<Spinner?>(null)
     }
+    var datePickerOpened by remember {
+        mutableStateOf(false)
+    }
 
+    val datePickerState = rememberDatePickerState()
+
+
+    var planType: PlanType? = null
+    for (type in PlanType.entries) if (selectedPlanItem?.spinnerItemText.equals(
+            type.name,
+            ignoreCase = true
+        )
+    ) planType = type
+    val startingDate: Date? = if (datePickerState.selectedDateMillis != null) Date.from(
+        Instant.ofEpochMilli(
+            datePickerState.selectedDateMillis!!
+        )
+    ) else null
+
+
+    val frequency = when (selectedTimesPerWeekItem?.spinnerItemText) {
+        R.string.once_a_week.toString() -> 1
+        R.string.twice_a_week.toString() -> 2
+        R.string.three_times_a_week.toString() -> 3
+        R.string.four_times_a_week.toString() -> 4
+        else -> {
+            0
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -320,38 +358,45 @@ private fun MakeYourPlan() {
                 Spacer(modifier = Modifier.height(32.dp))
 
                 SpinnerItem(
-                    title = "Plan Type",
-                    message = "Pick Your Plan Type",
-                    items = listOf(
-                        Spinner(spinnerItemText = "Half Hizb"),
-                        Spinner(spinnerItemText = "Quarter Hizb"),
-                        Spinner(spinnerItemText = "Juz"),
-                    ),
+                    title = stringResource(R.string.plan_type),
+                    message = stringResource(R.string.pick_your_plan_type),
+                    items = PlanType.entries.map {
+                        when (it) {
+                            PlanType.HALF_HIZB -> Spinner(spinnerItemText = stringResource(R.string.half_hizb))
+                            PlanType.QUARTER_HIZB -> Spinner(spinnerItemText = stringResource(R.string.quarter_hizb))
+                            PlanType.JUZ -> Spinner(spinnerItemText = stringResource(R.string.juz))
+                        }
+                    },
                 ) {
                     selectedPlanItem = it
                 }
 
                 SpinnerItem(
-                    title = "Starting Date",
-                    message = "Pick your plan starting date",
+                    title = stringResource(R.string.starting_date),
+                    message = stringResource(R.string.pick_your_plan_starting_date),
                     items = listOf(
-                        Spinner(spinnerItemText = "Today"),
-                        Spinner(spinnerItemText = "Tomorrow"),
-                        Spinner(spinnerItemText = "Next Week"),
-                        Spinner(spinnerItemText = "Next Month"),
+//                        Spinner(spinnerItemText = "Today"),
+//                        Spinner(spinnerItemText = "Tomorrow"),
+//                        Spinner(spinnerItemText = "Next Week"),
+//                        Spinner(spinnerItemText = "Next Month"),
                     ),
+                    onItemClicked = { datePickerOpened = !datePickerOpened }
                 ) {
                     selectedStartingDateItem = it
                 }
 
+                if (datePickerOpened) {
+                    DatePicker(state = datePickerState)
+                }
+
                 SpinnerItem(
-                    title = "How many times a week?",
-                    message = "Pick your plan weekly schedule",
+                    title = stringResource(R.string.how_many_times_a_week),
+                    message = stringResource(R.string.pick_your_plan_weekly_schedule),
                     items = listOf(
-                        Spinner(spinnerItemText = "Once a week"),
-                        Spinner(spinnerItemText = "Twice a week"),
-                        Spinner(spinnerItemText = "Three times a week"),
-                        Spinner(spinnerItemText = "Four times a week"),
+                        Spinner(spinnerItemText = stringResource(R.string.once_a_week)),
+                        Spinner(spinnerItemText = stringResource(R.string.twice_a_week)),
+                        Spinner(spinnerItemText = stringResource(R.string.three_times_a_week)),
+                        Spinner(spinnerItemText = stringResource(R.string.four_times_a_week)),
                     ),
                 ) {
                     selectedTimesPerWeekItem = it
@@ -359,10 +404,20 @@ private fun MakeYourPlan() {
 
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Button(
-                        onClick = {},
+                        onClick = {
+                            viewModel.onEvent(
+                                PlanEvent.CreatePlan(
+                                    Plan(
+                                        planType = planType,
+                                        startingDate = startingDate,
+                                        frequency = frequency,
+                                    )
+                                )
+                            )
+                        },
                     ) {
                         Text(
-                            text = "Make your plan",
+                            text = stringResource(R.string.make_your_plan),
                             fontFamily = poppins,
                             fontWeight = FontWeight.Normal,
                             fontSize = 12.sp
@@ -382,6 +437,7 @@ fun SpinnerItem(
     title: String,
     message: String,
     items: List<Spinner>,
+    onItemClicked: () -> Unit = {},
     onItemSelected: (Spinner) -> Unit = {},
 ) {
 
@@ -419,6 +475,7 @@ fun SpinnerItem(
                 .defaultMinSize(minWidth = 500.dp)
                 .background(Color.White)
                 .clickable {
+                    onItemClicked()
                     isExpanded = !isExpanded
                 }
                 .padding(start = 12.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
@@ -465,7 +522,6 @@ fun SpinnerItem(
                             .animateContentSize(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        val density = LocalDensity.current
                         AnimatedVisibility(
                             visible = selected,
                             enter =  // If this item is under the selected item
@@ -519,6 +575,12 @@ fun SpinnerItem(
             }
         }
     }
+}
+
+enum class ItemType {
+    MEMORIZE,
+    CONNECTION,
+    REVISION
 }
 
 
